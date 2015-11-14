@@ -44,7 +44,7 @@ public class GetData extends AsyncTask<String ,Void,String> {
         InputStreamReader in = new InputStreamReader((InputStream)conn.getContent());
         BufferedReader bf = new BufferedReader(in);
 
-
+        System.out.println("Rope");
         while(bf.readLine()!=null){
             output = output+bf.readLine();}
 
@@ -60,7 +60,7 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
 
 
-
+        System.out.println("Rope");
         return output;
     }
 
