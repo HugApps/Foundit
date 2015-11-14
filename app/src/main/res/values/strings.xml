@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">HackHarvardApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="Drop"> Dropped </string>
+    <string name="Static">Static</string>
+    <string name="steps">Steps</string>
+    <string name="Dark">Dark</string>
+    <string name="Bright">Bright</string>
+</resources>
