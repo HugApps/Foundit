@@ -24,7 +24,8 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
     String address;
     Item i;
-
+    ArrayList<String> list = new ArrayList<String>();
+    int TIMEOUT = 5000;
 
     public GetData(String ip , Item item){
         this.i=item;
@@ -36,18 +37,21 @@ public class GetData extends AsyncTask<String ,Void,String> {
     }
     @Override
     protected String doInBackground(String... params) {
-        String output="";
+
         try{
         URL url = new URL("http://192.168.4.1:80/index.html");
         HttpURLConnection conn =(HttpURLConnection)url.openConnection();
+        conn.setConnectTimeout(50);
         conn.setRequestMethod("GET");
         InputStreamReader in = new InputStreamReader((InputStream)conn.getContent());
         BufferedReader bf = new BufferedReader(in);
-
+        String output;
         System.out.println("Rope");
-        while(bf.readLine()!=null){
-            output = output+bf.readLine();}
+        while((output=bf.readLine())!=null){
+            list.add(output);
 
+            }
+        for (String s:list){System.out.println(s);}
         }
 
         catch(Exception e){
@@ -60,19 +64,15 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
 
 
-        System.out.println("Rope");
-        return output;
+
+        return "";
     }
 
     @Override
     // Parse string and upate sharepreferences file
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        ArrayList<String> list = new ArrayList<String>();
-        list.add(s);
-        list.add(s);
-        list.add(s);
-        list.add(s);
+
         HashSet<String> list2 = new HashSet<String>(list);
         Set<String> dataset= list2;
         i.updateData(dataset);

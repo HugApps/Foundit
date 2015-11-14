@@ -108,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
                 ft = fm.beginTransaction();
                 ft.replace(R.id.datafrag, datafragment).commit();
 
-               /* EditText serviceName = new EditText(getApplication());
+
+               EditText serviceName = new EditText(getApplication());
                 serviceName.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));
                 TextView serviceStatus = new TextView(getApplication());
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 service.addView(statusIcon);
                 service.addView(serviceName);
                 service.addView(serviceStatus);
-                serviceTable.addView(service);*/
+                serviceTable.addView(service);
             }
         });
 

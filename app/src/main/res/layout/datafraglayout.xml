@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#e1f081">
 
 
     <TextView
@@ -8,20 +9,22 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="0 C"
+        android:textSize="100px"
         android:id="@+id/TempDisplay"
-        android:layout_marginStart="44dp"
-        android:layout_alignParentTop="true"
+        android:textColor="#1816be"
+        android:layout_alignBottom="@+id/Thermo"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="37dp" />
+        android:layout_marginStart="55dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/Bright"
+        android:textSize="100px"
         android:id="@+id/LightDisplay"
-        android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/TempDisplay" />
+        android:layout_below="@+id/imageView"
+        android:layout_alignStart="@+id/imageView" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,8 +32,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/steps"
         android:id="@+id/StepsDrop"
-        android:layout_marginEnd="66dp"
-        android:layout_alignTop="@+id/LightDisplay"
+        android:textColor="#c71515"
+        android:layout_below="@+id/steps"
         android:layout_alignParentEnd="true" />
 
     <TextView
@@ -39,6 +42,34 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/Drop"
         android:id="@+id/DropStatus"
-        android:layout_alignTop="@+id/TempDisplay"
-        android:layout_alignStart="@+id/StepsDrop" />
+        android:layout_marginTop="34dp"
+        android:textColor="#eb1010"
+        android:layout_below="@+id/imageView"
+        android:layout_alignEnd="@+id/steps" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Thermo"
+        android:src="@drawable/temperature"
+        android:layout_alignBottom="@+id/StepsDrop"
+        android:layout_toEndOf="@+id/LightDisplay" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/steps"
+        android:src="@drawable/steps"
+        android:layout_marginEnd="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/brightness1"
+        android:layout_marginTop="128dp"
+        android:layout_below="@+id/TempDisplay"
+        android:layout_alignStart="@+id/TempDisplay" />
 </RelativeLayout>
