@@ -40,12 +40,46 @@ public class Item {
     }
 
     // Saves the data list into shared preference with the object name as the key
-    private  void saveData (){
+    public void saveData (){
         file =c.getSharedPreferences(SHARED_PREFRENCE,0);
 
 
 
 
 
+    }
+
+
+
+    public String getDrop() {
+        return Drop;
+    }
+
+    public void setDrop(String drop) {
+        Drop = drop;
+    }
+
+    public String getLight() {
+        return Light;
+    }
+
+    public void setLight(String light) {
+        Light = light;
+    }
+
+    public String getSteps() {
+        return Steps;
+    }
+
+    public void setSteps(String steps) {
+        Steps = steps;
+    }
+
+    public String getAcce() {
+        return Acce;
+    }
+
+    public void setAcce(String acce) {
+        Acce = acce;
     }
 }
