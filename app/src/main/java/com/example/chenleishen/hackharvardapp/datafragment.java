@@ -1,6 +1,7 @@
 package com.example.chenleishen.hackharvardapp;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +11,9 @@ import android.widget.TextView;
 
 import com.example.chenleishen.hackharvardapp.R;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -22,30 +26,31 @@ public class datafragment extends Fragment {
     TextView Steps;
     View frag;
     Item obj;
-
+    String [] DisplayList;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        SharedPreferences shared = getActivity().getSharedPreferences("ItemDATA",0);
+        SharedPreferences shared = getActivity().getSharedPreferences("test", Context.MODE_PRIVATE);
 
 
-        Set<String> list = shared.getStringSet("test",null);
-        String[] displayvalues  =(String[])list.toArray();
-
-        Acce = (TextView)getView().findViewById(R.id.DropStatus);
-        Temp =(TextView)getView().findViewById(R.id.TempDisplay);
-        Light=(TextView)getView().findViewById(R.id.LightDisplay);
-        Steps = (TextView)getView().findViewById(R.id.StepsDrop);
-
-        Acce.setText(displayvalues[0]);
-        Temp.setText(displayvalues[0]);
-        Light.setText(displayvalues[0]);
-        Steps.setText(displayvalues[0]);
+       Set<String> DisplaySet= shared.getStringSet("ITEMS", null);
+        DisplayList = DisplaySet.toArray(new String[DisplaySet.size()]);
 
 
 
+       for(String s : DisplayList){
+
+           System.out.println(s);
+
+       }
+
+
+
+     //  Temp.setText(temp.get(1));
+     //  Light.setText(temp.get(2));
+     //  Steps.setText(temp.get(3));
 
     }
 
@@ -56,6 +61,15 @@ public class datafragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater ,ViewGroup container,Bundle savedInstanceState){
         frag=inflater.inflate(R.layout.datafraglayout,container,false);
+        Acce = (TextView)frag.findViewById(R.id.DropStatus);
+        Temp =(TextView)frag.findViewById(R.id.TempDisplay);
+        Light=(TextView)frag.findViewById(R.id.LightDisplay);
+        Steps = (TextView)frag.findViewById(R.id.StepsDrop);
+
+        Acce.setText(DisplayList[0]);
+        Temp.setText(DisplayList[1]);
+        Light.setText(DisplayList[2]);
+        Steps.setText(DisplayList[3]);
         return frag;
 
     }

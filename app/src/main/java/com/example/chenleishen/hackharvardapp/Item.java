@@ -1,9 +1,13 @@
 package com.example.chenleishen.hackharvardapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -15,29 +19,41 @@ public class Item {
 
     private String Tag,Drop,Light,Steps,Acce;
 
-    Set<String> datavalues;
-    Context c;
+
+    SharedPreferences f ;
+
 
     String SHARED_PREFRENCE = "ItemDATA";
-    SharedPreferences file =c.getSharedPreferences(SHARED_PREFRENCE,0);
-    SharedPreferences.Editor  editor = file.edit();
-    public Item (String Name ,Context context){
+
+
+    public Item (String Name ,SharedPreferences file){
 
         this.Tag=Name;
-        this.c=context;
-        //Testing fake data
-        Drop = "test";
-        Light ="test";
-        Steps ="test";
-        Acce="test";
 
-        datavalues.add(Drop);
-        datavalues.add(Light);
-        datavalues.add(Steps);
-        datavalues.add(Acce);
-        editor.putStringSet(Tag, datavalues);
-        editor.commit();
-        editor.apply();
+        f=file;
+        //Testing fake data
+       // this.Drop = "test2";
+       // this.Light ="testb3";
+      //  this.Steps ="testc2";
+     //   this.Acce="test3d";
+     //   ArrayList<String> list = new ArrayList<String>();
+      //  list.add(Drop);
+      //  list.add(Light);
+      //  list.add(Steps);
+      //  list.add(Acce);
+      //   HashSet<String> list2 = new HashSet<String>(list);
+
+      //  SharedPreferences.Editor  editor = f.edit();
+     //   editor.putStringSet(Tag, list2);
+       // editor.commit();
+       // Set<String> set2 = f.getStringSet(Tag,null);
+      //  for (String s : set2){
+           // System.out.println(s);
+     //   }
+
+
+
+
 
     }
 
@@ -45,9 +61,12 @@ public class Item {
 
 
     public void updateData(Set<String> datas){
+
+       System.out.println("WDF");
+       SharedPreferences.Editor  editor = f.edit();
        editor.putStringSet(Tag,datas);
        editor.commit();
-       editor.apply();
+
 
     }
 

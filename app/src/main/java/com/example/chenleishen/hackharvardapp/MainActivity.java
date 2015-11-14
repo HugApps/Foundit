@@ -3,6 +3,8 @@ package com.example.chenleishen.hackharvardapp;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -35,12 +37,13 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout frag ;
     FragmentManager fm;
     FragmentTransaction ft;
-
+    Item node;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         datafragment = new datafragment();
+        SharedPreferences file = getApplicationContext().getSharedPreferences("test", Context.MODE_PRIVATE);
         frag = (FrameLayout)findViewById(R.id.datafrag);
 
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -54,7 +57,10 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
-        Item node = new Item("test",this);
+         node = new Item("ITEMS",
+                file);
+        GetData fetcher = new GetData("1.1.1.1",node);
+
         serviceTable = (TableLayout) findViewById(R.id.serviceTable);
 //        serviceTable.removeAllViews();
 //        service = (TableRow) findViewById(R.id.newRow);
@@ -67,12 +73,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                GetData fetcher = new GetData("1.1.1.1",node);
+                fetcher.execute("hellp");
                 fm = getFragmentManager();
+
+
                 ft = fm.beginTransaction();
-                ft.replace(R.id.datafrag,datafragment);
+                ft.replace(R.id.datafrag,datafragment).commit();
 
-
-                EditText serviceName = new EditText(getApplication());
+               /* EditText serviceName = new EditText(getApplication());
                 serviceName.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));
                 TextView serviceStatus = new TextView(getApplication());
@@ -91,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 service.addView(statusIcon);
                 service.addView(serviceName);
                 service.addView(serviceStatus);
-                serviceTable.addView(service);
+                serviceTable.addView(service);*/
             }
         });
     }

@@ -13,6 +13,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -22,7 +24,8 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
     String address;
     Item i;
-    Set<String> dataset ;
+
+
     public GetData(String ip , Item item){
         this.i=item;
         this.address= "http://"+ ip+":80/index.html";
@@ -35,19 +38,20 @@ public class GetData extends AsyncTask<String ,Void,String> {
     protected String doInBackground(String... params) {
         String output="";
         try{
-        URL url = new URL(address);
+        URL url = new URL("http://yahoo.com");
         HttpURLConnection conn =(HttpURLConnection)url.openConnection();
         conn.setRequestMethod("GET");
         InputStreamReader in = new InputStreamReader((InputStream)conn.getContent());
         BufferedReader bf = new BufferedReader(in);
 
+        System.out.println("Rope");
         while(bf.readLine()!=null){
             output = output+bf.readLine();}
 
         }
 
         catch(Exception e){
-            System.out.println("cannot connect");
+            System.out.println(e.toString());
 
         }
 
@@ -56,7 +60,7 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
 
 
-
+        System.out.println("Rope");
         return output;
     }
 
@@ -64,11 +68,13 @@ public class GetData extends AsyncTask<String ,Void,String> {
     // Parse string and upate sharepreferences file
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-
-        dataset.add(s);
-        dataset.add(s);
-        dataset.add(s);
-        dataset.add(s);
+        ArrayList<String> list = new ArrayList<String>();
+        list.add(s);
+        list.add(s);
+        list.add(s);
+        list.add(s);
+        HashSet<String> list2 = new HashSet<String>(list);
+        Set<String> dataset= list2;
         i.updateData(dataset);
 
         // Somehow parse the strings
