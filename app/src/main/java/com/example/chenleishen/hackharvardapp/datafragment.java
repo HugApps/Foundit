@@ -67,9 +67,9 @@ public class datafragment extends Fragment {
         Steps = (TextView)frag.findViewById(R.id.StepsDrop);
 
        // Acce.setText(DisplayList[0]);
-        //Temp.setText(DisplayList[1]);
-//        Light.setText(DisplayList[2]);
-        //Steps.setText(DisplayList[3]);
+       // Temp.setText(DisplayList[1]);
+      //  Light.setText(DisplayList[2]);
+       // Steps.setText(DisplayList[3]);
         return frag;
 
     }

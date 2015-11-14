@@ -18,7 +18,7 @@ public class Item {
 
 
     private String Tag,Drop,Light,Steps,Acce;
-
+    Boolean Loss = false;
 
     SharedPreferences f ;
 
@@ -58,12 +58,16 @@ public class Item {
     }
 
     // Saves the data list into shared preference with the object name as the key
+    public void Lost(){
+        this.Loss  = !Loss;
 
+    }
 
     public void updateData(Set<String> datas){
 
        System.out.println("WDF");
        SharedPreferences.Editor  editor = f.edit();
+       editor.remove(Tag);
        editor.putStringSet(Tag,datas);
        editor.commit();
 

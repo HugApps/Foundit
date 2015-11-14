@@ -73,15 +73,17 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                GetData fetcher = new GetData("1.1.1.1",node);
-                fetcher.execute("hellp");
-                fm = getFragmentManager();
 
 
-                ft = fm.beginTransaction();
-                ft.replace(R.id.datafrag,datafragment).commit();
+               // GetData fetcher = new GetData("1.1.1.1",node);
+               // fetcher.execute("hellp");
+               // fm = getFragmentManager();
 
-               /* EditText serviceName = new EditText(getApplication());
+
+               // ft = fm.beginTransaction();
+               // ft.replace(R.id.datafrag,datafragment).commit();
+
+               EditText serviceName = new EditText(getApplication());
                 serviceName.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));
                 TextView serviceStatus = new TextView(getApplication());
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 service.addView(statusIcon);
                 service.addView(serviceName);
                 service.addView(serviceStatus);
-                serviceTable.addView(service);*/
+                serviceTable.addView(service);
             }
         });
     }
