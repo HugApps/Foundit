@@ -24,7 +24,7 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
     String address;
     Item i;
-
+    ArrayList<String> list = new ArrayList<String>();
 
     public GetData(String ip , Item item){
         this.i=item;
@@ -36,18 +36,27 @@ public class GetData extends AsyncTask<String ,Void,String> {
     }
     @Override
     protected String doInBackground(String... params) {
-        String output="";
+        String output;
         try{
-        URL url = new URL("http://yahoo.com");
+        URL url = new URL("http://192.168.4.1:80/index.html");
         HttpURLConnection conn =(HttpURLConnection)url.openConnection();
         conn.setRequestMethod("GET");
         InputStreamReader in = new InputStreamReader((InputStream)conn.getContent());
         BufferedReader bf = new BufferedReader(in);
 
-        System.out.println("Rope");
-        while(bf.readLine()!=null){
-            output = output+bf.readLine();}
+        //System.out.println("Rope");
+        //
+         // System.out.println(bf.readLine());
 
+          while (bf.readLine()!=EOF) {
+
+
+              list.add(bf.readLine());
+
+              System.out.println(list.size());
+          }
+
+        in.close();
         }
 
         catch(Exception e){
@@ -60,7 +69,7 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
 
 
-        System.out.println("Rope");
+       // System.out.println(output);
         return output;
     }
 
@@ -68,11 +77,9 @@ public class GetData extends AsyncTask<String ,Void,String> {
     // Parse string and upate sharepreferences file
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        ArrayList<String> list = new ArrayList<String>();
-        list.add(s);
-        list.add(s);
-        list.add(s);
-        list.add(s);
+
+
+        //System.out.println(list.size());
         HashSet<String> list2 = new HashSet<String>(list);
         Set<String> dataset= list2;
         i.updateData(dataset);
