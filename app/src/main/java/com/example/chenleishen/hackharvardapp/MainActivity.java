@@ -22,14 +22,11 @@ import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
     TableLayout serviceTable;
-    EditText serviceName;
-    TextView serviceStatus;
+//    EditText serviceName;
+//    TextView serviceStatus;
     Button addService, removeService;
-    TableRow service;
-    ImageView statusIcon;
-    int pendingId;
-    int connectedId;
-    int lostID;
+//    TableRow service;
+//    ImageView statusIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,21 +45,36 @@ public class MainActivity extends AppCompatActivity {
 //        });
         serviceTable = (TableLayout) findViewById(R.id.serviceTable);
 //        serviceTable.removeAllViews();
-        service = (TableRow) findViewById(R.id.newRow);
-        statusIcon = (ImageView) findViewById(R.id.statusIcon);
+//        service = (TableRow) findViewById(R.id.newRow);
+//        statusIcon = (ImageView) findViewById(R.id.statusIcon);
         addService = (Button) findViewById(R.id.addService);
-        serviceName = (EditText) findViewById(R.id.serviceName);
-        serviceStatus = (TextView) findViewById(R.id.serviceStatus);
+//        serviceName = (EditText) findViewById(R.id.serviceName);
+//        serviceStatus = (TextView) findViewById(R.id.serviceStatus);
 
         addService.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                EditText serviceName = new EditText(getApplication());
+                serviceName.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                        LayoutParams.WRAP_CONTENT));
+                TextView serviceStatus = new TextView(getApplication());
+                serviceStatus.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                        LayoutParams.WRAP_CONTENT));
+                TableRow service = new TableRow(getApplication());
+                service.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                        LayoutParams.WRAP_CONTENT));
+                ImageView statusIcon = new ImageView(getApplication());
+                statusIcon.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                        LayoutParams.WRAP_CONTENT));
 
                 statusIcon.setImageResource(R.drawable.refresh);
                 serviceName.setText("NEW SERVICE");
                 serviceStatus.setText("Connecting");
-//                serviceTable.addView();
+                service.addView(statusIcon);
+                service.addView(serviceName);
+                service.addView(serviceStatus);
+                serviceTable.addView(service);
             }
         });
     }
