@@ -51,13 +51,13 @@ public class MainActivity extends AppCompatActivity {
     private BandClient client = null;
     private TextView smartWatchStatus;
     TableLayout serviceTable;
-//    EditText serviceName;
+    //    EditText serviceName;
 //    TextView serviceStatus;
     Button addService, removeService, smartWatchConnect;
-//    TableRow service;
+    //    TableRow service;
 //    ImageView statusIcon;
-    Fragment datafragment ;
-    FrameLayout frag ;
+    Fragment datafragment;
+    FrameLayout frag;
     FragmentManager fm;
     FragmentTransaction ft;
     Item node;
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 ft.replace(R.id.datafrag, datafragment).commit();
 
 
-               EditText serviceName = new EditText(getApplication());
+                EditText serviceName = new EditText(getApplication());
                 serviceName.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));
                 TextView serviceStatus = new TextView(getApplication());
@@ -219,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
 
         private boolean getConnectedBandClient() throws InterruptedException, BandException {
             if (client == null) {
@@ -279,5 +280,6 @@ public class MainActivity extends AppCompatActivity {
             appendToUI(message + "\n");
         }
     }
+
 
 
