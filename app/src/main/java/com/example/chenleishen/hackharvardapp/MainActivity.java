@@ -1,5 +1,6 @@
 package com.example.chenleishen.hackharvardapp;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,11 +18,18 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
     TableLayout serviceTable;
     EditText serviceName;
+    TextView serviceStatus;
     Button addService, removeService;
+    TableRow service;
+    ImageView statusIcon;
+    int pendingId;
+    int connectedId;
+    int lostID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +48,21 @@ public class MainActivity extends AppCompatActivity {
 //        });
         serviceTable = (TableLayout) findViewById(R.id.serviceTable);
 //        serviceTable.removeAllViews();
+        service = (TableRow) findViewById(R.id.newRow);
+        statusIcon = (ImageView) findViewById(R.id.statusIcon);
         addService = (Button) findViewById(R.id.addService);
+        serviceName = (EditText) findViewById(R.id.serviceName);
+        serviceStatus = (TextView) findViewById(R.id.serviceStatus);
+
         addService.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                
+
+                statusIcon.setImageResource(R.drawable.refresh);
+                serviceName.setText("NEW SERVICE");
+                serviceStatus.setText("Connecting");
+//                serviceTable.addView();
             }
         });
     }
