@@ -74,14 +74,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
-               // GetData fetcher = new GetData("1.1.1.1",node);
-               // fetcher.execute("hellp");
-               // fm = getFragmentManager();
-
-
-               // ft = fm.beginTransaction();
-               // ft.replace(R.id.datafrag,datafragment).commit();
+                GetData fetcher = new GetData("1.1.1.1",node);
+                fetcher.execute("hellp");
+                fm = getFragmentManager();
+                frag.setVisibility(View.VISIBLE);
+               ft = fm.beginTransaction();
+               ft.replace(R.id.datafrag,datafragment).commit();
 
                EditText serviceName = new EditText(getApplication());
                 serviceName.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,

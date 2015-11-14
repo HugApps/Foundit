@@ -21,7 +21,8 @@ import java.util.Set;
  * Created by Hugo on 11/14/2015.
  */
 public class GetData extends AsyncTask<String ,Void,String> {
-
+    //thermo,
+    //192.168.4.1:80/buzzon/buzzoff
     String address;
     Item i;
     ArrayList<String> list = new ArrayList<String>();

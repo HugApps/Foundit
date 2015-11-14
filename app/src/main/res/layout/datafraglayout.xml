@@ -12,9 +12,8 @@
         android:textSize="100px"
         android:id="@+id/TempDisplay"
         android:textColor="#1816be"
-        android:layout_alignBottom="@+id/Thermo"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="55dp" />
+        android:layout_below="@+id/Thermo"
+        android:layout_alignStart="@+id/Thermo" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,17 +22,19 @@
         android:text="@string/Bright"
         android:textSize="100px"
         android:id="@+id/LightDisplay"
-        android:layout_below="@+id/imageView"
-        android:layout_alignStart="@+id/imageView" />
+        android:layout_alignTop="@+id/DropStatus"
+        android:layout_alignStart="@+id/TempDisplay" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/steps"
+        android:textSize="100px"
         android:id="@+id/StepsDrop"
         android:textColor="#c71515"
-        android:layout_below="@+id/steps"
+
+        android:layout_alignTop="@+id/TempDisplay"
         android:layout_alignParentEnd="true" />
 
     <TextView
@@ -41,35 +42,55 @@
         android:layout_height="fill_parent"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/Drop"
+        android:textSize="100px"
         android:id="@+id/DropStatus"
-        android:layout_marginTop="34dp"
         android:textColor="#eb1010"
-        android:layout_below="@+id/imageView"
-        android:layout_alignEnd="@+id/steps" />
+        android:layout_below="@+id/Bulb"
+        android:layout_alignStart="@+id/StepsDrop" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/Thermo"
         android:src="@drawable/temperature"
-        android:layout_alignBottom="@+id/StepsDrop"
-        android:layout_toEndOf="@+id/LightDisplay" />
+        android:layout_above="@+id/Bulb"
+        android:layout_alignEnd="@+id/Bulb" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/steps"
         android:src="@drawable/steps"
-        android:layout_marginEnd="35dp"
+
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignStart="@+id/Acce" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
+        android:id="@+id/Bulb"
         android:src="@drawable/brightness1"
-        android:layout_marginTop="128dp"
-        android:layout_below="@+id/TempDisplay"
-        android:layout_alignStart="@+id/TempDisplay" />
+        android:layout_marginTop="136dp"
+        android:layout_below="@+id/steps"
+        android:layout_toEndOf="@+id/drop"
+        android:maxWidth="200dp"
+        android:maxHeight="200dp"
+        android:minHeight="150dp"
+        android:minWidth="150dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/drop"
+
+        android:layout_marginTop="37dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Acce"
+        android:src="@drawable/coordinate"
+        android:layout_alignTop="@+id/Bulb"
+        android:layout_alignEnd="@+id/DropStatus" />
+
 </RelativeLayout>
