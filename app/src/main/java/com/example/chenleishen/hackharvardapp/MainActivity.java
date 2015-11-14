@@ -43,13 +43,17 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
 public class MainActivity extends AppCompatActivity {
     private BandClient client = null;
-    private TextView txtStatus;
+    private TextView smartWatchStatus;
     TableLayout serviceTable;
 //    EditText serviceName;
 //    TextView serviceStatus;
-    Button addService, removeService;
+    Button addService, removeService, smartWatchConnect;
 //    TableRow service;
 //    ImageView statusIcon;
     Fragment datafragment ;
@@ -57,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fm;
     FragmentTransaction ft;
     Item node;
+
+    private UUID tileId = UUID.fromString("aa0D508F-70A3-47D4-BBA3-812BADB1F8Aa");
 
 
     @Override
@@ -102,8 +108,6 @@ public class MainActivity extends AppCompatActivity {
                 ft = fm.beginTransaction();
                 ft.replace(R.id.datafrag, datafragment).commit();
 
-                txtStatus;
-
                /* EditText serviceName = new EditText(getApplication());
                 serviceName.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));
@@ -124,6 +128,15 @@ public class MainActivity extends AppCompatActivity {
                 service.addView(serviceName);
                 service.addView(serviceStatus);
                 serviceTable.addView(service);*/
+            }
+        });
+
+        smartWatchConnect = (Button) findViewById(R.id.smartWatchConnect);
+        smartWatchConnect.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                smartWatchStatus.setText("");
+                new appTask().execute();
             }
         });
     }
@@ -164,33 +177,106 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-}
+    private class appTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                if (getConnectedBandClient()) {
+                    if (doesTileExist(client.getTileManager().getTiles().await(), tileId)) {
+                        sendMessage("Send message to existing message tile");
+                    } else {
+                        if (addTile()) {
+                            sendMessage("Send message to new message tile");
+                        }
+                    }
+                } else {
+                    appendToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
+                }
+            } catch (BandException e) {
+                String exceptionMessage = "";
+                switch (e.getErrorType()) {
+                    case DEVICE_ERROR:
+                        exceptionMessage = "Please make sure bluetooth is on and the band is in range.\n";
+                        break;
+                    case UNSUPPORTED_SDK_VERSION_ERROR:
+                        exceptionMessage = "Microsoft Health BandService doesn't support your SDK Version. Please update to latest SDK.\n";
+                        break;
+                    case SERVICE_ERROR:
+                        exceptionMessage = "Microsoft Health BandService is not available. Please make sure Microsoft Health is installed and that you have the correct permissions.\n";
+                        break;
+                    case BAND_FULL_ERROR:
+                        exceptionMessage = "Band is full. Please use Microsoft Health to remove a tile.\n";
+                        break;
+                    default:
+                        exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
+                        break;
+                }
+                appendToUI(exceptionMessage);
 
-    private void appendToUI(final String string) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                txtStatus.append(string);
+            } catch (Exception e) {
+                appendToUI(e.getMessage());
             }
-        });
-    }
+            return null;
+        }
 
-    private boolean addTile() throws Exception {
-        /* Set the options */
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Bitmap tileIcon = BitmapFactory.decodeResource(getBaseContext().getResources(), R.raw.tile_icon_large, options);
-        Bitmap badgeIcon = BitmapFactory.decodeResource(getBaseContext().getResources(), R.raw.tile_icon_small, options);
+        private boolean getConnectedBandClient() throws InterruptedException, BandException {
+            if (client == null) {
+                BandInfo[] devices = BandClientManager.getInstance().getPairedBands();
+                if (devices.length == 0) {
+                    appendToUI("Band isn't paired with your phone.\n");
+                    return false;
+                }
+                client = BandClientManager.getInstance().create(getBaseContext(), devices[0]);
+            } else if (ConnectionState.CONNECTED == client.getConnectionState()) {
+                return true;
+            }
 
-        BandTile tile = new BandTile.Builder(tileId, "MessageTile", tileIcon)
-                .setTileSmallIcon(badgeIcon).build();
-        appendToUI("Message Tile is adding ...\n");
-        if (client.getTileManager().addTile(this, tile).await()) {
-            appendToUI("Message Tile is added.\n");
-            return true;
-        } else {
-            appendToUI("Unable to add message tile to the band.\n");
+            appendToUI("Band is connecting...\n");
+            return ConnectionState.CONNECTED == client.connect().await();
+        }
+
+        private boolean doesTileExist(List<BandTile> tiles, UUID tileId) {
+            for (BandTile tile : tiles) {
+                if (tile.getTileId().equals(tileId)) {
+                    return true;
+                }
+            }
             return false;
         }
+
+        private void appendToUI(final String string) {
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    smartWatchStatus.append(string);
+                }
+            });
+        }
+
+        private boolean addTile() throws Exception {
+        /* Set the options */
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap tileIcon = BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.applogo1, options);
+            Bitmap badgeIcon = BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.applogo1, options);
+
+            BandTile tile = new BandTile.Builder(tileId, "MessageTile", tileIcon)
+                    .setTileSmallIcon(badgeIcon).build();
+            appendToUI("Message Tile is adding ...\n");
+            if (client.getTileManager().addTile(this, tile).await()) {
+                appendToUI("Message Tile is added.\n");
+                return true;
+            } else {
+                appendToUI("Unable to add message tile to the band.\n");
+                return false;
+            }
+        }
+
+        private void sendMessage(String message) throws BandIOException {
+            client.getNotificationManager().sendMessage(tileId, "Tile Message", message, new Date(), MessageFlags.SHOW_DIALOG);
+            appendToUI(message + "\n");
+        }
     }
+
+
