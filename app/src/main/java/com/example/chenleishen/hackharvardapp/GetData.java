@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Set;
 
 /**
  * Created by Hugo on 11/14/2015.
@@ -21,7 +22,7 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
     String address;
     Item i;
-
+    Set<String> dataset ;
     public GetData(String ip , Item item){
         this.i=item;
         this.address= "http://"+ ip+":80/index.html";
@@ -63,14 +64,13 @@ public class GetData extends AsyncTask<String ,Void,String> {
     // Parse string and upate sharepreferences file
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+
+        dataset.add(s);
+        dataset.add(s);
+
         // Somehow parse the strings
         // update item values
-        i.setAcce(s);
-        i.setDrop(s);
-        i.setLight(s);
-        i.setSteps(s);
-        // update sharedpreference for object
-        i.saveData();
+
 
     }
 }

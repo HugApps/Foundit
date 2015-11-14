@@ -17,10 +17,11 @@ public class Item {
 
     Set<String> datavalues;
     Context c;
-    SharedPreferences file;
+
 
     String SHARED_PREFRENCE = "ItemDATA";
-
+    SharedPreferences file =c.getSharedPreferences(SHARED_PREFRENCE,0);
+    SharedPreferences.Editor  editor = file.edit();
     public Item (String Name ,Context context){
 
         this.Tag=Name;
@@ -30,18 +31,20 @@ public class Item {
         Light ="test";
         Steps ="test";
         Acce="test";
-        SharedPreferences.Editor  editor = file.edit();
+
         datavalues.add(Drop);
         datavalues.add(Light);
         datavalues.add(Steps);
         datavalues.add(Acce);
-        editor.putStringSet(Tag,datavalues);
 
     }
 
     // Saves the data list into shared preference with the object name as the key
     public void saveData (){
-        file =c.getSharedPreferences(SHARED_PREFRENCE,0);
+
+        editor.putStringSet(Tag, datavalues);
+
+
 
 
 
@@ -49,7 +52,10 @@ public class Item {
 
     }
 
+    public void updateData(Set<String> datas){
+       editor.putStringSet(Tag,datas);
 
+    }
 
     public String getDrop() {
         return Drop;

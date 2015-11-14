@@ -24,6 +24,7 @@ public class datafragment extends Fragment {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         SharedPreferences shared = getActivity().getSharedPreferences("Test",0);
+
         Acce = (TextView)getView().findViewById(R.id.DropStatus);
         Temp =(TextView)getView().findViewById(R.id.TempDisplay);
         Light=(TextView)getView().findViewById(R.id.LightDisplay);
