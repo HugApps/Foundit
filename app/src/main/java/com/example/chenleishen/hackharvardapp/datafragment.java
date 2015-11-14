@@ -1,4 +1,7 @@
+package com.example.chenleishen.hackharvardapp;
+
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,7 @@ public class datafragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        SharedPreferences shared = getActivity().getSharedPreferences("Test",0);
         Acce = (TextView)getView().findViewById(R.id.DropStatus);
         Temp =(TextView)getView().findViewById(R.id.TempDisplay);
         Light=(TextView)getView().findViewById(R.id.LightDisplay);
