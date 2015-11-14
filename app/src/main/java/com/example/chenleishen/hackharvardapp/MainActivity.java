@@ -1,5 +1,8 @@
 package com.example.chenleishen.hackharvardapp;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +16,7 @@ import android.app.Activity;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
@@ -27,11 +31,18 @@ public class MainActivity extends AppCompatActivity {
     Button addService, removeService;
 //    TableRow service;
 //    ImageView statusIcon;
+    Fragment datafragment ;
+    FrameLayout frag ;
+    FragmentManager fm;
+    FragmentTransaction ft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        datafragment = new datafragment();
+        frag = (FrameLayout)findViewById(R.id.datafrag);
+
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
@@ -43,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
+        Item node = new Item("test",this);
         serviceTable = (TableLayout) findViewById(R.id.serviceTable);
 //        serviceTable.removeAllViews();
 //        service = (TableRow) findViewById(R.id.newRow);
@@ -55,6 +67,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                fm = getFragmentManager();
+                ft = fm.beginTransaction();
+                ft.replace(R.id.datafrag,datafragment);
+
+
                 EditText serviceName = new EditText(getApplication());
                 serviceName.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));

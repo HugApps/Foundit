@@ -67,6 +67,9 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
         dataset.add(s);
         dataset.add(s);
+        dataset.add(s);
+        dataset.add(s);
+        i.updateData(dataset);
 
         // Somehow parse the strings
         // update item values

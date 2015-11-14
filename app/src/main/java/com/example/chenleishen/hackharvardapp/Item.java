@@ -18,7 +18,6 @@ public class Item {
     Set<String> datavalues;
     Context c;
 
-
     String SHARED_PREFRENCE = "ItemDATA";
     SharedPreferences file =c.getSharedPreferences(SHARED_PREFRENCE,0);
     SharedPreferences.Editor  editor = file.edit();
@@ -36,24 +35,19 @@ public class Item {
         datavalues.add(Light);
         datavalues.add(Steps);
         datavalues.add(Acce);
+        editor.putStringSet(Tag, datavalues);
+        editor.commit();
+        editor.apply();
 
     }
 
     // Saves the data list into shared preference with the object name as the key
-    public void saveData (){
 
-        editor.putStringSet(Tag, datavalues);
-
-
-
-
-
-
-
-    }
 
     public void updateData(Set<String> datas){
        editor.putStringSet(Tag,datas);
+       editor.commit();
+       editor.apply();
 
     }
 
