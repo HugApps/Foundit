@@ -58,8 +58,6 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
 
 
-
-
         System.out.println("Rope");
         return output;
     }
