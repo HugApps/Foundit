@@ -17,7 +17,7 @@ import java.util.Set;
 public class Item {
 
 
-    private String Tag,Drop,Light,Steps,Acce;
+    private String Tag,Drop,Light,Steps,Acce,Temp;
     Boolean Loss = false;
 
     SharedPreferences f ;
@@ -32,21 +32,27 @@ public class Item {
 
         f=file;
         //Testing fake data
-       // this.Drop = "test2";
-       // this.Light ="testb3";
-      //  this.Steps ="testc2";
-     //   this.Acce="test3d";
-     //   ArrayList<String> list = new ArrayList<String>();
-      //  list.add(Drop);
-      //  list.add(Light);
-      //  list.add(Steps);
-      //  list.add(Acce);
-      //   HashSet<String> list2 = new HashSet<String>(list);
+       this.Drop = "Dropped";
+        this.Light="Bright";
 
-      //  SharedPreferences.Editor  editor = f.edit();
-     //   editor.putStringSet(Tag, list2);
-       // editor.commit();
-       // Set<String> set2 = f.getStringSet(Tag,null);
+        this.Temp="20";
+        this.Steps ="56";
+     ArrayList<String> list = new ArrayList<String>();
+        list.add(Steps);
+
+        list.add(Temp);
+        list.add(Light);
+        //list.add(Temp);
+         //0
+        list.add(Drop);
+
+     HashSet<String> list2 = new HashSet<String>(list);
+     SharedPreferences.Editor  editor = f.edit();
+      editor.remove(Tag);
+      editor.commit();
+      editor.putStringSet(Tag, list2);
+        editor.commit();
+      // Set<String> set2 = f.getStringSet(Tag,null);
       //  for (String s : set2){
            // System.out.println(s);
      //   }
