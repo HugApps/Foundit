@@ -4,16 +4,12 @@
     android:layout_height="match_parent">
 
     <TableLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
         android:id="@+id/serviceTable"
         android:layout_below="@+id/addService"
         android:backgroundTint="#743535">
-
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -25,11 +21,9 @@
                     android:id="@+id/datafrag"
                     android:layout_column="0"
                     android:background="#f4f277">
-
                 </FrameLayout>
-            </TableRow>
 
-        </TableRow>
+            </TableRow>
     </TableLayout>
 
     <Button
@@ -37,10 +31,8 @@
         android:layout_height="wrap_content"
         android:text="Add Item"
         android:id="@+id/addService"
-        android:gravity="left|center"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/smartWatchStatus"
         android:layout_alignParentStart="true"
-        android:layout_gravity="left|top"
         android:textAlignment="center" />
 
     <Button
@@ -48,11 +40,29 @@
         android:layout_height="wrap_content"
         android:text="Remove Item"
         android:id="@+id/removeService"
-        android:gravity="center|right"
+        android:layout_below="@+id/smartWatchStatus"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect to Microsoft Watch"
+        android:id="@+id/smartWatchConnect"
         android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:gravity="center|right"
         android:layout_gravity="right|top"
         android:layout_toEndOf="@+id/addService"
         android:textAlignment="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/smartWatchStatus"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/smartWatchConnect" />
+
 
 </RelativeLayout>
