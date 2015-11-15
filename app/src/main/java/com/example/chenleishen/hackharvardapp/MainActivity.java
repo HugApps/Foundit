@@ -33,8 +33,13 @@ import com.microsoft.band.BandIOException;
 import com.microsoft.band.ConnectionState;
 import com.microsoft.band.notifications.MessageFlags;
 //import com.microsoft.band.sdk.sampleapp.notification.R;
+import com.microsoft.band.sensors.BandHeartRateEvent;
+import com.microsoft.band.sensors.BandHeartRateEventListener;
 import com.microsoft.band.tiles.BandTile;
 import com.microsoft.band.BandException;
+
+import com.microsoft.band.sensors.BandPedometerEvent;
+import com.microsoft.band.sensors.BandPedometerEventListener;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -133,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         smartWatchConnect = (Button) findViewById(R.id.smartWatchConnect);
+        smartWatchStatus = (TextView) findViewById(R.id.smartWatchStatus);
         smartWatchConnect.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,6 +146,16 @@ public class MainActivity extends AppCompatActivity {
                 new appTask().execute();
             }
         });
+
+        private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
+            @Override
+            public void onBandHeartRateChanged(final BandHeartRateEvent event) {
+                if (event != null) {
+                    appendToUI(String.format("Heart Rate = %d beats per minute\n"
+                            + "Quality = %s\n", event.getHeartRate(), event.getQuality()));
+                }
+            }
+        };
     }
 
     @Override
@@ -184,10 +200,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 if (getConnectedBandClient()) {
                     if (doesTileExist(client.getTileManager().getTiles().await(), tileId)) {
-                        sendMessage("Send message to existing message tile");
+                        sendMessage("You have disconnected from your item.");
                     } else {
                         if (addTile()) {
-                            sendMessage("Send message to new message tile");
+                            sendMessage("You have disconnected from your item.");
                         }
                     }
                 } else {
@@ -207,6 +223,37 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case BAND_FULL_ERROR:
                         exceptionMessage = "Band is full. Please use Microsoft Health to remove a tile.\n";
+                        break;
+                    default:
+                        exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
+                        break;
+                }
+                appendToUI(exceptionMessage);
+
+            } catch (Exception e) {
+                appendToUI(e.getMessage());
+            }
+            return null;
+        }
+    }
+
+    private class HeartRateSubscriptionTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                if (getConnectedBandClient()) {
+                        client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
+                } else {
+                    appendToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
+                }
+            } catch (BandException e) {
+                String exceptionMessage="";
+                switch (e.getErrorType()) {
+                    case UNSUPPORTED_SDK_VERSION_ERROR:
+                        exceptionMessage = "Microsoft Health BandService doesn't support your SDK Version. Please update to latest SDK.\n";
+                        break;
+                    case SERVICE_ERROR:
+                        exceptionMessage = "Microsoft Health BandService is not available. Please make sure Microsoft Health is installed and that you have the correct permissions.\n";
                         break;
                     default:
                         exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
@@ -265,12 +312,12 @@ public class MainActivity extends AppCompatActivity {
 
             BandTile tile = new BandTile.Builder(tileId, "MessageTile", tileIcon)
                     .setTileSmallIcon(badgeIcon).build();
-            appendToUI("Message Tile is adding ...\n");
+            appendToUI("FindIt is being added to your Microsoft Band, please be patient ...\n");
             if (client.getTileManager().addTile(this, tile).await()) {
-                appendToUI("Message Tile is added.\n");
+                appendToUI("FindIt is added to your Microsoft Band.\n");
                 return true;
             } else {
-                appendToUI("Unable to add message tile to the band.\n");
+                appendToUI("Unable to add FindIt to your Microsoft Band.\n");
                 return false;
             }
         }
