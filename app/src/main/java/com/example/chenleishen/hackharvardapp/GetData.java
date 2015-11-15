@@ -56,7 +56,8 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
         catch(Exception e){
             System.out.println(e.toString());
-
+            MainActivity m = new MainActivity();
+            m.flag = true;
         }
 
 

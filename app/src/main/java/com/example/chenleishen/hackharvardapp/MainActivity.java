@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fm;
     FragmentTransaction ft;
     Item node;
+    protected boolean flag = false;
 
     private UUID tileId = UUID.fromString("aa0D508F-70A3-47D4-BBA3-812BADB1F8Aa");
 
@@ -147,16 +149,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
-            @Override
-            public void onBandHeartRateChanged(final BandHeartRateEvent event) {
-                if (event != null) {
-                    appendToUI(String.format("Heart Rate = %d beats per minute\n"
-                            + "Quality = %s\n", event.getHeartRate(), event.getQuality()));
-                }
-            }
-        };
+        new vibrate().execute();
+
     }
+
+    private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
+        @Override
+        public void onBandHeartRateChanged(final BandHeartRateEvent event) {
+            if (event != null) {
+                appendToUI(String.format("Heart Rate = %d beats per minute\n"
+                        + "Quality = %s\n", event.getHeartRate(), event.getQuality()));
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -194,16 +199,35 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    private class vibrate extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                System.out.println("ping");
+                if (flag != false) {
+                    flag = !flag;
+                    Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(500);
+                }
+            }catch(Exception e){
+                System.out.println("error");
+            }
+            return null;
+        }
+    }
+
     private class appTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             try {
                 if (getConnectedBandClient()) {
                     if (doesTileExist(client.getTileManager().getTiles().await(), tileId)) {
-                        sendMessage("You have disconnected from your item.");
+                        sendMessage("You are connected");
+//                        removeFromUI();
                     } else {
                         if (addTile()) {
-                            sendMessage("You have disconnected from your item.");
+                            sendMessage("You are connected");
+//                            removeFromUI();
                         }
                     }
                 } else {
@@ -272,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
             if (client == null) {
                 BandInfo[] devices = BandClientManager.getInstance().getPairedBands();
                 if (devices.length == 0) {
+//                    removeFromUI();
                     appendToUI("Band isn't paired with your phone.\n");
                     return false;
                 }
@@ -279,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (ConnectionState.CONNECTED == client.getConnectionState()) {
                 return true;
             }
-
+//            removeFromUI();
             appendToUI("Band is connecting...\n");
             return ConnectionState.CONNECTED == client.connect().await();
         }
@@ -302,6 +327,15 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+//    private void removeFromUI() {
+//        this.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                smartWatchStatus.clearComposingText();
+//            }
+//        });
+//    }
+
         private boolean addTile() throws Exception {
         /* Set the options */
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -314,17 +348,19 @@ public class MainActivity extends AppCompatActivity {
                     .setTileSmallIcon(badgeIcon).build();
             appendToUI("FindIt is being added to your Microsoft Band, please be patient ...\n");
             if (client.getTileManager().addTile(this, tile).await()) {
+//                removeFromUI();
                 appendToUI("FindIt is added to your Microsoft Band.\n");
                 return true;
             } else {
+//                removeFromUI();
                 appendToUI("Unable to add FindIt to your Microsoft Band.\n");
                 return false;
             }
         }
 
         private void sendMessage(String message) throws BandIOException {
-            client.getNotificationManager().sendMessage(tileId, "Tile Message", message, new Date(), MessageFlags.SHOW_DIALOG);
-            appendToUI(message + "\n");
+            client.getNotificationManager().sendMessage(tileId, "", message, new Date(), MessageFlags.SHOW_DIALOG);
+            appendToUI(message);
         }
     }
 
