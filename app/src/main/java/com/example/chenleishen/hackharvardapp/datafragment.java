@@ -68,34 +68,57 @@ public class datafragment extends Fragment {
         Light=(TextView)frag.findViewById(R.id.LightDisplay);
         Steps = (TextView)frag.findViewById(R.id.StepsDrop);
         TextView dropdisplay = (TextView)getActivity().findViewById(R.id.DropStatus);
-        if(!DisplayList[0].equals("Dropped")) {
-            Acce.setText("Static");
-            Acce.setTextColor(Color.GREEN);
+       // System.out.println(DisplayList[0]);
 
-        }else{
-            Acce.setText("Dropped");
-            Acce.setTextColor(Color.RED);
-        }
+
+
+
+
 
         ImageView Bulb = (ImageView)frag.findViewById(R.id.Bulb);
-        if(DisplayList[1].equals("Bright")){
-            Bulb.setBackgroundResource(R.drawable.brightness);
 
-        }else{
-            Bulb.setBackgroundResource(R.drawable.brightness1);}
 
-        TextView temperature = (TextView)frag.findViewById(R.id.TempDisplay);
-        temperature.setText(DisplayList[3]);
-        if(Integer.parseInt(DisplayList[3]) <20 ){
 
-            temperature.setTextColor(Color.BLUE);
+        //System.out.println(DisplayList[1]);
 
-        }else{
-            temperature.setTextColor(Color.RED);
+      // System.out.println(DisplayList[2]);
+
+
+        int size = DisplayList.length;
+
+        if(DisplayList[0]!=null){
+            Temp.setText(DisplayList[0]);
+
+            int t = Integer.parseInt(DisplayList[0]);
+            if(t >20){
+                    Temp.setTextColor(Color.RED);
+            }
+            else{
+                Temp.setTextColor(Color.BLUE);
+            }
         }
 
-        TextView steps = (TextView)frag.findViewById(R.id.StepsDrop);
-        steps.setText(DisplayList[2])   ;
+        if(DisplayList[1]!=null && DisplayList[1].equals("Bright")){
+            Bulb.setBackgroundResource(R.drawable.brightness1);
+
+
+        }else{ Bulb.setBackgroundResource(R.drawable.brightness1);}
+
+
+        if(DisplayList[2]!=null){
+            Steps.setText(DisplayList[2]);
+        }
+        else{Steps.setText("0");}
+
+        if(DisplayList[3]!=null && DisplayList[3].equals("Dropped")){
+            Acce.setText("Dropped");
+        }
+        else{
+            Acce.setText("static");
+        }
+
+        //System.out.println(DisplayList[3]);
+
        // Acce.setText(DisplayList[0]);
        // Temp.setText(DisplayList[1]);
       //  Light.setText(DisplayList[2]);

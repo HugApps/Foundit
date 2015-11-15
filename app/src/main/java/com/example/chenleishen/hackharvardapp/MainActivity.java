@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
                 fetcher.execute("hellp");
                 fm = getFragmentManager();
                 frag.setVisibility(View.VISIBLE);
-               ft = fm.beginTransaction();
-               ft.replace(R.id.datafrag,datafragment).commit();
+                ft = fm.beginTransaction();
+                ft.replace(R.id.datafrag,datafragment).commit();
 
                EditText serviceName = new EditText(getApplication());
                 serviceName.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,

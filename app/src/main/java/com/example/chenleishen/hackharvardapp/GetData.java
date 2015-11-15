@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  * Created by Hugo on 11/14/2015.
@@ -42,17 +43,15 @@ public class GetData extends AsyncTask<String ,Void,String> {
         try{
         URL url = new URL("http://192.168.4.1:80/index.html");
         HttpURLConnection conn =(HttpURLConnection)url.openConnection();
-        conn.setConnectTimeout(50);
+        conn.setConnectTimeout(50000);
         conn.setRequestMethod("GET");
         InputStreamReader in = new InputStreamReader((InputStream)conn.getContent());
         BufferedReader bf = new BufferedReader(in);
         String output;
         System.out.println("Rope");
-        while((output=bf.readLine())!=null){
-            list.add(output);
+       output=bf.toString();
 
-            }
-        for (String s:list){System.out.println(s);}
+
         }
 
         catch(Exception e){
@@ -74,7 +73,7 @@ public class GetData extends AsyncTask<String ,Void,String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
 
-        HashSet<String> list2 = new HashSet<String>(list);
+        HashSet<String> list2 = new HashSet<String>(parseString(s));
         Set<String> dataset= list2;
         i.updateData(dataset);
 
@@ -83,4 +82,33 @@ public class GetData extends AsyncTask<String ,Void,String> {
 
 
     }
+
+    private ArrayList<String> parseString(String line){
+        ArrayList<String> list = new ArrayList<String>();
+        StringTokenizer token = new StringTokenizer(line,",");
+        while(token.hasMoreTokens()){
+            String temp = token.nextToken();
+            System.out.println(temp);
+            if(temp.equals("Temp")){
+                list.add(token.nextToken());
+            }else if(temp.equals("Light")){
+                list.add(token.nextToken());
+
+            }else if(temp.equals("Dropped")){
+                  list.add(token.nextToken());
+            }else if(temp.equals("Steps")){
+                list.add(token.nextToken());
+            }
+
+
+
+
+        }
+
+
+
+    return list;
+    }
+
+
 }

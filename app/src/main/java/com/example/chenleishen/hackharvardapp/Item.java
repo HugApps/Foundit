@@ -39,13 +39,17 @@ public class Item {
         this.Steps ="56";
      ArrayList<String> list = new ArrayList<String>();
         list.add(Steps);
+
         list.add(Temp);
         list.add(Light);
-        list.add(Drop); //0
-
+        //list.add(Temp);
+         //0
+        list.add(Drop);
 
      HashSet<String> list2 = new HashSet<String>(list);
      SharedPreferences.Editor  editor = f.edit();
+      editor.remove(Tag);
+      editor.commit();
       editor.putStringSet(Tag, list2);
         editor.commit();
       // Set<String> set2 = f.getStringSet(Tag,null);
