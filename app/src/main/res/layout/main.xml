@@ -6,38 +6,40 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin = "10dp"
         android:layout_alignParentStart="true"
         android:id="@+id/serviceTable"
         android:layout_below="@+id/addService"
-        android:backgroundTint="#743535">
+        android:background="@drawable/border">
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <FrameLayout
-                    android:layout_width="436dp"
-                    android:layout_height="728dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:id="@+id/datafrag"
-                    android:layout_column="0"
-                    android:background="#f4f277">
+                    android:layout_column="0">
                 </FrameLayout>
 
             </TableRow>
     </TableLayout>
 
     <Button
-        android:layout_width="224dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
+        android:layout_margin = "5dp"
         android:text="Add Item"
         android:id="@+id/addService"
-        android:layout_below="@+id/smartWatchStatus"
         android:layout_alignParentStart="true"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:layout_below="@+id/smartWatchStatus" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
+        android:layout_margin = "10dp"
         android:text="Remove Item"
         android:id="@+id/removeService"
         android:layout_below="@+id/smartWatchStatus"
@@ -46,6 +48,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin = "10dp"
         android:text="Connect to Microsoft Watch"
         android:id="@+id/smartWatchConnect"
         android:layout_alignParentTop="true"
@@ -64,5 +67,12 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/smartWatchConnect" />
 
-
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/removeService"
+        android:src="@drawable/applogo" />
+    
 </RelativeLayout>

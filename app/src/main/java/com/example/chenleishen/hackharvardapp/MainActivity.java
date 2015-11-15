@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,28 +24,61 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ImageView;
 
+import com.microsoft.band.BandClient;
+import com.microsoft.band.BandClientManager;
+import com.microsoft.band.BandException;
+import com.microsoft.band.BandInfo;
+import com.microsoft.band.BandIOException;
+import com.microsoft.band.ConnectionState;
+import com.microsoft.band.notifications.MessageFlags;
+//import com.microsoft.band.sdk.sampleapp.notification.R;
+import com.microsoft.band.sensors.BandHeartRateEvent;
+import com.microsoft.band.sensors.BandHeartRateEventListener;
+import com.microsoft.band.tiles.BandTile;
+import com.microsoft.band.BandException;
+
+import com.microsoft.band.sensors.BandPedometerEvent;
+import com.microsoft.band.sensors.BandPedometerEventListener;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
+
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
 public class MainActivity extends AppCompatActivity {
+    private BandClient client = null;
+    private TextView smartWatchStatus;
     TableLayout serviceTable;
-//    EditText serviceName;
+    //    EditText serviceName;
 //    TextView serviceStatus;
-    Button addService, removeService;
-//    TableRow service;
+    Button addService, removeService, smartWatchConnect;
+    //    TableRow service;
 //    ImageView statusIcon;
-    Fragment datafragment ;
-    FrameLayout frag ;
+    Fragment datafragment;
+    FrameLayout frag;
     FragmentManager fm;
     FragmentTransaction ft;
     Item node;
+    protected boolean flag = false;
+
+    private UUID tileId = UUID.fromString("aa0D508F-70A3-47D4-BBA3-812BADB1F8Aa");
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         datafragment = new datafragment();
         SharedPreferences file = getApplicationContext().getSharedPreferences("test", Context.MODE_PRIVATE);
-        frag = (FrameLayout)findViewById(R.id.datafrag);
+        frag = (FrameLayout) findViewById(R.id.datafrag);
 
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
@@ -57,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
-         node = new Item("ITEMS",
+        node = new Item("ITEMS",
                 file);
-        GetData fetcher = new GetData("1.1.1.1",node);
+        GetData fetcher = new GetData("1.1.1.1", node);
 
         serviceTable = (TableLayout) findViewById(R.id.serviceTable);
 //        serviceTable.removeAllViews();
@@ -73,15 +107,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
-                GetData fetcher = new GetData("1.1.1.1",node);
+                GetData fetcher = new GetData("1.1.1.1", node);
                 fetcher.execute("hellp");
                 fm = getFragmentManager();
-                frag.setVisibility(View.VISIBLE);
-                ft = fm.beginTransaction();
-                ft.replace(R.id.datafrag,datafragment).commit();
 
-               EditText serviceName = new EditText(getApplication());
+
+                ft = fm.beginTransaction();
+                ft.replace(R.id.datafrag, datafragment).commit();
+
+
+                EditText serviceName = new EditText(getApplication());
                 serviceName.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));
                 TextView serviceStatus = new TextView(getApplication());
@@ -103,7 +138,30 @@ public class MainActivity extends AppCompatActivity {
                 serviceTable.addView(service);
             }
         });
+
+        smartWatchConnect = (Button) findViewById(R.id.smartWatchConnect);
+        smartWatchStatus = (TextView) findViewById(R.id.smartWatchStatus);
+        smartWatchConnect.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                smartWatchStatus.setText("");
+                new appTask().execute();
+            }
+        });
+
+        new vibrate().execute();
+
     }
+
+    private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
+        @Override
+        public void onBandHeartRateChanged(final BandHeartRateEvent event) {
+            if (event != null) {
+                appendToUI(String.format("Heart Rate = %d beats per minute\n"
+                        + "Quality = %s\n", event.getHeartRate(), event.getQuality()));
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -126,4 +184,185 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-}
+
+    @Override
+    protected void onDestroy() {
+        if (client != null) {
+            try {
+                client.disconnect().await();
+            } catch (InterruptedException e) {
+                // Do nothing as this is happening during destroy
+            } catch (BandException e) {
+                // Do nothing as this is happening during destroy
+            }
+        }
+        super.onDestroy();
+    }
+
+    private class vibrate extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                System.out.println("ping");
+                if (flag != false) {
+                    flag = !flag;
+                    Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(500);
+                }
+            }catch(Exception e){
+                System.out.println("error");
+            }
+            return null;
+        }
+    }
+
+    private class appTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                if (getConnectedBandClient()) {
+                    if (doesTileExist(client.getTileManager().getTiles().await(), tileId)) {
+                        sendMessage("You are connected");
+//                        removeFromUI();
+                    } else {
+                        if (addTile()) {
+                            sendMessage("You are connected");
+//                            removeFromUI();
+                        }
+                    }
+                } else {
+                    appendToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
+                }
+            } catch (BandException e) {
+                String exceptionMessage = "";
+                switch (e.getErrorType()) {
+                    case DEVICE_ERROR:
+                        exceptionMessage = "Please make sure bluetooth is on and the band is in range.\n";
+                        break;
+                    case UNSUPPORTED_SDK_VERSION_ERROR:
+                        exceptionMessage = "Microsoft Health BandService doesn't support your SDK Version. Please update to latest SDK.\n";
+                        break;
+                    case SERVICE_ERROR:
+                        exceptionMessage = "Microsoft Health BandService is not available. Please make sure Microsoft Health is installed and that you have the correct permissions.\n";
+                        break;
+                    case BAND_FULL_ERROR:
+                        exceptionMessage = "Band is full. Please use Microsoft Health to remove a tile.\n";
+                        break;
+                    default:
+                        exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
+                        break;
+                }
+                appendToUI(exceptionMessage);
+
+            } catch (Exception e) {
+                appendToUI(e.getMessage());
+            }
+            return null;
+        }
+    }
+
+    private class HeartRateSubscriptionTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                if (getConnectedBandClient()) {
+                        client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
+                } else {
+                    appendToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
+                }
+            } catch (BandException e) {
+                String exceptionMessage="";
+                switch (e.getErrorType()) {
+                    case UNSUPPORTED_SDK_VERSION_ERROR:
+                        exceptionMessage = "Microsoft Health BandService doesn't support your SDK Version. Please update to latest SDK.\n";
+                        break;
+                    case SERVICE_ERROR:
+                        exceptionMessage = "Microsoft Health BandService is not available. Please make sure Microsoft Health is installed and that you have the correct permissions.\n";
+                        break;
+                    default:
+                        exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
+                        break;
+                }
+                appendToUI(exceptionMessage);
+
+            } catch (Exception e) {
+                appendToUI(e.getMessage());
+            }
+            return null;
+        }
+    }
+
+        private boolean getConnectedBandClient() throws InterruptedException, BandException {
+            if (client == null) {
+                BandInfo[] devices = BandClientManager.getInstance().getPairedBands();
+                if (devices.length == 0) {
+//                    removeFromUI();
+                    appendToUI("Band isn't paired with your phone.\n");
+                    return false;
+                }
+                client = BandClientManager.getInstance().create(getBaseContext(), devices[0]);
+            } else if (ConnectionState.CONNECTED == client.getConnectionState()) {
+                return true;
+            }
+//            removeFromUI();
+            appendToUI("Band is connecting...\n");
+            return ConnectionState.CONNECTED == client.connect().await();
+        }
+
+        private boolean doesTileExist(List<BandTile> tiles, UUID tileId) {
+            for (BandTile tile : tiles) {
+                if (tile.getTileId().equals(tileId)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void appendToUI(final String string) {
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    smartWatchStatus.append(string);
+                }
+            });
+        }
+
+//    private void removeFromUI() {
+//        this.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                smartWatchStatus.clearComposingText();
+//            }
+//        });
+//    }
+
+        private boolean addTile() throws Exception {
+        /* Set the options */
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap tileIcon = BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.applogo1, options);
+            Bitmap badgeIcon = BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.applogo1, options);
+
+            BandTile tile = new BandTile.Builder(tileId, "MessageTile", tileIcon)
+                    .setTileSmallIcon(badgeIcon).build();
+            appendToUI("FindIt is being added to your Microsoft Band, please be patient ...\n");
+            if (client.getTileManager().addTile(this, tile).await()) {
+//                removeFromUI();
+                appendToUI("FindIt is added to your Microsoft Band.\n");
+                return true;
+            } else {
+//                removeFromUI();
+                appendToUI("Unable to add FindIt to your Microsoft Band.\n");
+                return false;
+            }
+        }
+
+        private void sendMessage(String message) throws BandIOException {
+            client.getNotificationManager().sendMessage(tileId, "", message, new Date(), MessageFlags.SHOW_DIALOG);
+            appendToUI(message);
+        }
+    }
+
+
+
