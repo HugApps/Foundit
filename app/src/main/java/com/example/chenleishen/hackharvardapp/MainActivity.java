@@ -49,6 +49,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -71,6 +73,14 @@ public class MainActivity extends AppCompatActivity {
 
     private UUID tileId = UUID.fromString("aa0D508F-70A3-47D4-BBA3-812BADB1F8Aa");
 
+    private BandPedometerEventListener mPedometerEventListener = new BandPedometerEventListener() {
+        @Override
+        public void onBandPedometerChanged(final BandPedometerEvent event) {
+            if (event != null) {
+                appendToUI(String.format("You were %d steps away from the last connectivity\n", event.getTotalSteps()));
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,15 +129,23 @@ public class MainActivity extends AppCompatActivity {
                 EditText serviceName = new EditText(getApplication());
                 serviceName.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));
+                serviceName.setPadding(5, 5, 5, 5);
+
                 TextView serviceStatus = new TextView(getApplication());
                 serviceStatus.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));
+                serviceStatus.setPadding(5, 5, 5, 5);
+
                 TableRow service = new TableRow(getApplication());
                 service.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));
+                service.setPadding(5, 5, 5, 5);
+
                 ImageView statusIcon = new ImageView(getApplication());
                 statusIcon.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.WRAP_CONTENT));
+                statusIcon.setPadding(5, 5, 5, 5);
+
 
                 statusIcon.setImageResource(R.drawable.refresh);
                 serviceName.setText("NEW SERVICE");
@@ -149,19 +167,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        removeService = (Button) findViewById(R.id.removeService);
+        removeService.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                smartWatchStatus.setText("");
+                new totalSteps().execute();
+            }
+        });
+
         new vibrate().execute();
 
     }
 
-    private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
-        @Override
-        public void onBandHeartRateChanged(final BandHeartRateEvent event) {
-            if (event != null) {
-                appendToUI(String.format("Heart Rate = %d beats per minute\n"
-                        + "Quality = %s\n", event.getHeartRate(), event.getQuality()));
+    @Override
+    protected void onResume() {
+        super.onResume();
+        smartWatchStatus.setText("");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (client != null) {
+            try {
+                client.getSensorManager().unregisterPedometerEventListener(mPedometerEventListener);
+            } catch (BandIOException e) {
+                appendToUI(e.getMessage());
             }
         }
-    };
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -261,12 +296,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class HeartRateSubscriptionTask extends AsyncTask<Void, Void, Void> {
+    private class totalSteps extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             try {
                 if (getConnectedBandClient()) {
-                        client.getSensorManager().registerHeartRateEventListener(mHeartRateEventListener);
+                        client.getSensorManager().registerPedometerEventListener(mPedometerEventListener);
                 } else {
                     appendToUI("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
                 }
@@ -341,10 +376,10 @@ public class MainActivity extends AppCompatActivity {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap tileIcon = BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.applogo1, options);
-            Bitmap badgeIcon = BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.applogo1, options);
+            Bitmap tileIcon = BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.applogo2, options);
+            Bitmap badgeIcon = BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.applogo3, options);
 
-            BandTile tile = new BandTile.Builder(tileId, "MessageTile", tileIcon)
+            BandTile tile = new BandTile.Builder(tileId, "FindIt", tileIcon)
                     .setTileSmallIcon(badgeIcon).build();
             appendToUI("FindIt is being added to your Microsoft Band, please be patient ...\n");
             if (client.getTileManager().addTile(this, tile).await()) {
